@@ -2,7 +2,7 @@
 
 ## 项目
 
-`qfile_url_workers` 是 QQ 闪传分享链接解析服务的 Cloudflare Workers 实现, 对应 Go 版本 `../qfile_url_go`. 无 Web UI, 所有响应为 JSON, 本地 `wrangler dev` 默认端口 8787, 可用 `--port` 指定.
+`qfile_url_workers` 是 QQ 闪传分享链接解析服务的 Cloudflare Workers 实现. 无 Web UI, 所有响应为 JSON, 本地 `wrangler dev` 默认端口 8787, 可用 `--port` 指定.
 
 ## 结构
 
