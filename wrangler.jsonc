@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "qfile-url-workers",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-18",
+  "observability": {
+    "enabled": true
+  }
+}
