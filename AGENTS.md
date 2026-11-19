@@ -18,6 +18,7 @@
 - `GET /qfile?url=<分享链接>&link=true`: 在上述文件项中 `sha1` 之后追加 `url` 直链; 任一文件签发失败时整个请求返回 502.
 - `GET /url?url=<分享链接>&file_id=<文件 id>`: 返回 `{"url":"..."}` 直链.
 - 错误统一返回 `{"error":"..."}`.
+- 跨域仅允许 `http://localhost:5173` 和 `https://www.yeqing.net`, `OPTIONS` 预检返回 204.
 
 ## 上游协议
 

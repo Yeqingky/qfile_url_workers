@@ -8,3 +8,4 @@
 - 使用 Web Crypto 计算 HMAC-SHA1 请求签名, 以随机匿名 uin 调用上游接口.
 - 支持分享链接白名单校验, 统一 JSON 错误响应.
 - 直链批量签发按 6 个并发执行, 避免瞬时连接过多.
+- 允许 `http://localhost:5173` 和 `https://www.yeqing.net` 跨域访问, 支持 `OPTIONS` 预检.

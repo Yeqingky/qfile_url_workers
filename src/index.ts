@@ -9,19 +9,45 @@ interface FileView {
 }
 
 const LINK_CONCURRENCY = 6;
+const ALLOWED_ORIGINS: Record<string, true> = {
+  "http://localhost:5173": true,
+  "https://www.yeqing.net": true,
+};
 
 export default {
   async fetch(request: Request): Promise<Response> {
-    const url = new URL(request.url);
-    if (url.pathname === "/qfile") {
-      return handleFiles(request, url);
+    const origin = request.headers.get("Origin");
+    const cors = origin !== null && ALLOWED_ORIGINS[origin] === true;
+    const response =
+      request.method === "OPTIONS" ? preflight(cors) : await route(request);
+    response.headers.set("Vary", "Origin");
+    if (cors) {
+      response.headers.set("Access-Control-Allow-Origin", origin);
     }
-    if (url.pathname === "/url") {
-      return handleLink(request, url);
-    }
-    return json(404, { error: "not found" });
+    return response;
   },
 } satisfies ExportedHandler;
+
+async function route(request: Request): Promise<Response> {
+  const url = new URL(request.url);
+  if (url.pathname === "/qfile") {
+    return handleFiles(request, url);
+  }
+  if (url.pathname === "/url") {
+    return handleLink(request, url);
+  }
+  return json(404, { error: "not found" });
+}
+
+function preflight(cors: boolean): Response {
+  const headers: Record<string, string> = {};
+  if (cors) {
+    headers["Access-Control-Allow-Methods"] = "GET";
+    headers["Access-Control-Allow-Headers"] = "Content-Type";
+    headers["Access-Control-Max-Age"] = "86400";
+  }
+  return new Response(null, { status: 204, headers });
+}
 
 async function handleFiles(request: Request, url: URL): Promise<Response> {
   if (request.method !== "GET") {
