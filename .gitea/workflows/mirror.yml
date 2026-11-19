@@ -1,0 +1,30 @@
+name: Mirror to GitHub
+
+on:
+  push:
+
+jobs:
+  mirror:
+    if: ${{ !github.event.deleted }}
+    timeout-minutes: 10
+    runs-on: docker
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch all branches and tags
+        run: |
+          git fetch --prune --no-tags origin '+refs/heads/*:refs/remotes/origin/*'
+          git fetch --tags origin '+refs/tags/*:refs/tags/*'
+
+      - name: Push to GitHub
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git config --global credential.helper store
+          printf 'https://x-access-token:%s@github.com\n' "$GH_PAT" > "$HOME/.git-credentials"
+          git remote add github https://github.com/Yeqingky/qfile_url_workers.git
+          git push github --force '+refs/remotes/origin/*:refs/heads/*'
+          git push github --force --tags

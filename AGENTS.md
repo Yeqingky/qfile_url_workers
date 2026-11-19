@@ -10,6 +10,7 @@
 - `src/index.ts`: Worker 入口, 路由与请求校验.
 - `test/qfile.test.ts`: 分享链接校验, 文件名转义和 HMAC-SHA1 签名的单元测试.
 - `wrangler.jsonc`: Worker 名称, 入口和兼容日期.
+- `.gitea/workflows/mirror.yml`: 分支和标签推送时完整镜像到 GitHub.
 
 ## 接口
 
