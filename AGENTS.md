@@ -9,13 +9,14 @@
 - `src/qfile.ts`: 分享页解析, 签名请求, 文件列表和直链获取.
 - `src/index.ts`: Worker 入口, 路由与请求校验.
 - `test/qfile.test.ts`: 分享链接校验, 文件名转义和 HMAC-SHA1 签名的单元测试.
+- `test/index.test.ts`: 批量直链签发的单文件失败隔离单元测试.
 - `wrangler.jsonc`: Worker 名称, 入口和兼容日期.
 - `.gitea/workflows/mirror.yml`: 分支和标签推送时完整镜像到 GitHub.
 
 ## 接口
 
 - `GET /qfile?url=<分享链接>`: 返回文件列表, 文件项包含 `file_id`, `name`, `size`, `sha1`.
-- `GET /qfile?url=<分享链接>&link=true`: 在上述文件项中 `sha1` 之后追加 `url` 直链; 任一文件签发失败时整个请求返回 502.
+- `GET /qfile?url=<分享链接>&link=true`: 在上述文件项中 `sha1` 之后追加 `url` 直链; 单个文件签发失败时该文件的 `url` 为 `null`, 其余文件正常返回.
 - `GET /url?url=<分享链接>&file_id=<文件 id>`: 返回 `{"url":"..."}` 直链.
 - 错误统一返回 `{"error":"..."}`.
 - 跨域仅允许 `http://localhost:5173` 和 `https://www.yeqing.net`, `OPTIONS` 预检返回 204.

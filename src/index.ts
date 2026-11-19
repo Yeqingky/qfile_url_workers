@@ -1,11 +1,11 @@
-import { InvalidShareError, errorMessage, getLink, listFiles } from "./qfile";
+import { InvalidShareError, errorMessage, getLink, listFiles, type File } from "./qfile";
 
 interface FileView {
   file_id: string;
   name: string;
   size: number;
   sha1: string;
-  url?: string;
+  url?: string | null;
 }
 
 const LINK_CONCURRENCY = 6;
@@ -61,9 +61,7 @@ async function handleFiles(request: Request, url: URL): Promise<Response> {
   try {
     const files = await listFiles(share);
     const withLinks = url.searchParams.get("link") === "true";
-    const urls = withLinks
-      ? await mapLimit(files, LINK_CONCURRENCY, (f) => getLink(f.id, f.name))
-      : [];
+    const urls = withLinks ? await signFileLinks(files) : [];
 
     const views: FileView[] = [];
     for (const [index, f] of files.entries()) {
@@ -74,7 +72,7 @@ async function handleFiles(request: Request, url: URL): Promise<Response> {
         sha1: f.sha1,
       };
       if (withLinks) {
-        view.url = urls[index]!;
+        view.url = urls[index] ?? null;
       }
       views.push(view);
     }
@@ -132,6 +130,21 @@ function json(
       "Content-Type": "application/json; charset=utf-8",
       ...headers,
     },
+  });
+}
+
+/** Signs a direct link per file; a failed file yields null instead of failing the batch. */
+export async function signFileLinks(
+  files: File[],
+  sign: (physicalId: string, name: string) => Promise<string> = getLink,
+): Promise<Array<string | null>> {
+  return mapLimit(files, LINK_CONCURRENCY, async (f) => {
+    try {
+      return await sign(f.id, f.name);
+    } catch (err) {
+      console.error(`/qfile: sign link for ${f.name}: ${errorMessage(err)}`);
+      return null;
+    }
   });
 }
 
