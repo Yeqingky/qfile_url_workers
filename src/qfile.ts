@@ -1,6 +1,6 @@
 // QQ Flash Transfer (QQ 闪传) share link resolver.
 //
-// Mirrors the Go implementation in qfile_url_go: the anonymous web API is
+// Mirrors the upstream web implementation: the anonymous web API is
 // called with a random uin and HMAC-SHA1 request signatures.
 
 const ORIGIN = "https://qfile.qq.com";

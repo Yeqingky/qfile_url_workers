@@ -2,8 +2,6 @@
 
 QQ 闪传分享链接的直链解析服务, 运行在 Cloudflare Workers 上. 无 Web UI, 所有响应为 JSON.
 
-Go 版本位于 `../qfile_url_go`, 本仓库是其 Workers 移植, 额外提供 `/qfile?link=true` 批量直链.
-
 ## 本地运行
 
 ```sh
